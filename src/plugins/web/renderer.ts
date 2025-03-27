@@ -49,8 +49,6 @@ export default function Renderer(
         if (!autoScale && scale) scaleElement(element, slideSize, vertical)
       }
     })
-    console.log('elements', elements)
-    console.log('slides', slides)
     positionTrack(
         elements[0].parentElement,
         slides[0].distance * size - sizeSum,
