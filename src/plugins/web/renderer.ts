@@ -39,22 +39,21 @@ export default function Renderer(
     const details = slider.track.details
     if (!details || !elements) return
     const slides = details.slides
+    let totalTranslation = 0
+
     elements.forEach((element, idx) => {
       if (remove) {
         if (!autoScale && scale) scaleElement(element, null, vertical)
-        positionElement(element, null, vertical)
       } else {
         if (!slides[idx]) return
         const slideSize = slides[idx].size * size
         if (!autoScale && scale) scaleElement(element, slideSize, vertical)
-        positionElement(
-          element,
-          slides[idx].distance * size - sizeSum,
-          vertical
-        )
+        totalTranslation = slides[idx].distance * size - sizeSum
         sizeSum += slideSize
       }
     })
+
+    positionElement(totalTranslation, vertical)
   }
 
   function roundValue(value) {
@@ -72,15 +71,18 @@ export default function Renderer(
     element.style['max-' + type] = value
   }
 
-  function positionElement(element, value, vertical) {
-    if (value !== null) {
-      value = roundValue(value)
-      const x = vertical ? 0 : value
-      const y = vertical ? value : 0
-      value = `translate3d(${x}px, ${y}px, 0)`
+  function positionElement(value, vertical) {
+    const trackElement = elements[0]?.parentElement
+    if (trackElement) {
+      if (value !== null) {
+        value = roundValue(value)
+        const x = vertical ? 0 : value
+        const y = vertical ? value : 0
+        value = `translate3d(${x}px, ${y}px, 0)`
+      }
+      trackElement.style.transform = value
+      trackElement.style['-webkit-transform'] = value
     }
-    element.style.transform = value
-    element.style['-webkit-transform'] = value
   }
 
   function reset() {
