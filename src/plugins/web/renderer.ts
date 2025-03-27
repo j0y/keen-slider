@@ -47,14 +47,15 @@ export default function Renderer(
         if (!slides[idx]) return
         const slideSize = slides[idx].size * size
         if (!autoScale && scale) scaleElement(element, slideSize, vertical)
-        positionElement(
-          element,
-          slides[idx].distance * size - sizeSum,
-          vertical
-        )
-        sizeSum += slideSize
       }
     })
+    console.log('elements', elements)
+    console.log('slides', slides)
+    positionTrack(
+        elements[0].parentElement,
+        slides[0].distance * size - sizeSum,
+        vertical
+    )
   }
 
   function roundValue(value) {
@@ -73,6 +74,16 @@ export default function Renderer(
   }
 
   function positionElement(element, value, vertical) {
+    if (value !== null) {
+      value = roundValue(value)
+      const x = vertical ? 0 : value
+      const y = vertical ? value : 0
+      value = `translate3d(${x}px, ${y}px, 0)`
+    }
+    element.style.transform = value
+    element.style['-webkit-transform'] = value
+  }
+  function positionTrack(element, value, vertical) {
     if (value !== null) {
       value = roundValue(value)
       const x = vertical ? 0 : value
